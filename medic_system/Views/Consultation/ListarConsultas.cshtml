@@ -1,0 +1,153 @@
+﻿@model List<Consultum>
+
+@{
+    ViewData["Title"] = "Listar Consultas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Lista de consultas</h3>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="opcion">Buscar por</label>
+                <select class="form-control" id="opcion" onchange="onSearchChanged()">
+                    <option value="-2">Listar todo</option>
+                    <option value="1">Nombre(s)</option>
+                    <option value="2">Número de documento</option>
+                    <option value="3">Email</option>
+                    <option value="4">Nacionalidad</option>
+                </select>
+            </div>
+            <div class="col-md-5 d-none" id="buscarFields">
+                <label>&nbsp;</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Ingresar criterio de búsqueda" id="buscarCriterio" />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" onclick="onSearch()">Buscar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr class="table-primary">
+                    <th>Acciones</th>
+                    <th>Fecha de la consulta</th>
+                    <th>Nombre Paciente</th>
+                    <th>Especialidad</th>
+                    <th>Motivo</th>
+                    <th>Enfermedad</th>
+                    <th>Historial</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var consulta in Model)
+                {
+                    <tr id="@consulta.IdConsulta">
+                        <td>
+                            <a asp-action="VerConsulta" asp-route-id="@consulta.IdConsulta" class="btn btn-outline-success">
+                                <i class="fa-regular fa-eye"></i> Visualizar
+                            </a>
+                        </td>
+                        <td>@consulta.FechacreacionConsulta</td>
+                        <td>@consulta.PacienteConsultaPNavigation?.PrimernombrePacientes @consulta.PacienteConsultaPNavigation?.PrimerapellidoPacientes</td>
+                        <td>@ViewBag.UsuarioEspecialidad</td>
+                        <td>@consulta.MotivoConsulta</td>
+                        <td>@consulta.EnfermedadConsulta</td>
+                        <td>@consulta.HistorialConsulta</td>
+                        <td>
+                         @consulta.EstadoConsultaC
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div id="noResults" class="no-results d-none">
+            No se encontraron resultados.
+        </div>
+    </div>
+}
+else
+{
+    <p>No se encontraron consultas.</p>
+}
+
+<a asp-action="CrearConsulta" asp-controller="Consultation" class="btn btn-outline-primary" style="margin-left:80%">
+    <i class="fa fa-plus"></i> Añadir nueva consulta
+</a>
+
+<script>
+    function onSearchChanged() {
+        const selectElement = document.getElementById('opcion');
+        const searchFields = document.getElementById('buscarFields');
+        const tableRows = document.querySelectorAll('tbody tr');
+
+        if (selectElement.value === '-2') {
+            searchFields.classList.add('d-none');
+            tableRows.forEach(row => row.style.display = '');
+            document.getElementById('noResults').classList.add('d-none');
+        } else {
+            searchFields.classList.remove('d-none');
+        }
+    }
+
+    function onSearch() {
+        const criterio = document.getElementById('buscarCriterio').value.toLowerCase();
+        const optionValue = document.getElementById('opcion').value;
+        const tableRows = document.querySelectorAll('tbody tr');
+        let found = false;
+
+        tableRows.forEach(row => {
+            if (row.id) {
+                let cellValue = '';
+                switch (optionValue) {
+                    case '1': cellValue = row.cells[2].innerText.toLowerCase(); break;
+                    case '2': cellValue = row.cells[3].innerText.toLowerCase(); break;
+                    case '3': cellValue = row.cells[4].innerText.toLowerCase(); break;
+                    case '4': cellValue = row.cells[5].innerText.toLowerCase(); break;
+                }
+
+                if (cellValue.includes(criterio)) {
+                    row.style.display = '';
+                    found = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+
+        document.getElementById('noResults').classList.toggle('d-none', found);
+    }
+
+    var successMessage = '@TempData["SuccessMessage"]';
+    var errorMessage = '@TempData["ErrorMessage"]';
+
+    if (successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: successMessage
+        });
+    }
+
+    if (errorMessage) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage
+        });
+    }
+</script>
