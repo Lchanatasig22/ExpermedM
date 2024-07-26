@@ -41,7 +41,7 @@
                 <th>Nombre Paciente</th>
                 <th>Motivo</th>
                 <th>Especialidad</th>
-                <th>Estado de Pago</th>
+    @*             <th>Estado de Pago</th> *@
             </tr>
         </thead>
         <tbody>
@@ -62,12 +62,12 @@
                     <td>@cita.Paciente.PrimernombrePacientes @cita.Paciente.PrimerapellidoPacientes</td>
                     <td>@(cita.Motivo ?? "No disponible")</td>
                     <td>@ViewBag.UsuarioEspecialidad</td>
-                    @*       <td>@cita.</td> *@
+                @*    
                     <td>
                         <a asp-action="Facturacion" asp-controller="Facturacion" asp-route-id="@cita.IdCita" class="btn btn-outline-success">
                             <i class="fa-solid fa-money-bill"></i> Pagar
                         </a>
-                    </td>
+                    </td> *@
                 </tr>
             }
         </tbody>

@@ -9,16 +9,17 @@ namespace medic_system.Services
     {
         private readonly medical_systemContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ConsultationService _consultaService;
 
         /// <summary>
         /// Siempre que se cree un servicio se tiene que instanciar el DbContext
         /// </summary>
         /// <param name="context"></param>
-        public PatientService(medical_systemContext context, IHttpContextAccessor httpContextAccessor)
+        public PatientService(medical_systemContext context, IHttpContextAccessor httpContextAccessor,ConsultationService consultationService)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
-
+            _consultaService = consultationService;
         }
 
         public async Task<List<Paciente>> GetAllPacientesAsync()
@@ -32,11 +33,11 @@ namespace medic_system.Services
                 throw new InvalidOperationException("El nombre de usuario no está disponible en la sesión.");
             }
 
-            // Filtrar los pacientes por el usuario de creación
+            // Filtrar los pacientes por el usuario de creación y estado activo
             try
             {
                 var pacientes = await _context.Pacientes
-                    .Where(p => p.UsuariocreacionPacientes == NombreUsuario)
+                    .Where(p => p.UsuariocreacionPacientes == NombreUsuario && p.EstadoPacientes == 1)
                     .Include(p => p.NacionalidadPacientesPaNavigation)
                     .ToListAsync();
 
@@ -48,6 +49,7 @@ namespace medic_system.Services
                 throw new Exception("Ocurrió un error al obtener la lista de pacientes.", ex);
             }
         }
+
 
 
         public async Task<int> CreatePatientAsync(Paciente paciente)
@@ -84,6 +86,7 @@ namespace medic_system.Services
                     command.Parameters.AddWithValue("@ocupacion_pacientes", paciente.OcupacionPacientes);
                     command.Parameters.AddWithValue("@empresa_pacientes", paciente.EmpresaPacientes);
                     command.Parameters.AddWithValue("@segurosalud_pacientes_ca", paciente.SegurosaludPacientesCa);
+                    command.Parameters.AddWithValue("@estado_pacientes", paciente.EstadoPacientes);
 
                     await connection.OpenAsync();
                     var result = await command.ExecuteScalarAsync();
@@ -91,6 +94,7 @@ namespace medic_system.Services
                 }
             }
         }
+
 
 
         public async Task EditPatientAsync(Paciente paciente)
@@ -139,20 +143,18 @@ namespace medic_system.Services
             return await _context.Pacientes.FindAsync(id);
         }
 
-        public async Task DeletePatientAsync(int idPacientes)
+        public async Task DeletePatientAsync(int id)
         {
-            using (var connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
-            {
-                using (var command = new SqlCommand("sp_DeletePatient", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@id_pacientes", idPacientes);
+            // Eliminar consultas asociadas al paciente
+            await _consultaService.DeleteConsultasByPacienteIdAsync(id);
 
-                    await connection.OpenAsync();
-                    await command.ExecuteNonQueryAsync();
-                }
-            }
+            // Actualizar el estado del paciente a inactivo utilizando el procedimiento almacenado
+            var commandText = "EXEC sp_DeletePatient @id_pacientes";
+            var idParameter = new SqlParameter("@id_pacientes", id);
+
+            await _context.Database.ExecuteSqlRawAsync(commandText, idParameter);
         }
+
 
     }
 }

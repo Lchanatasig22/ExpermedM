@@ -25,6 +25,10 @@
 </style>
 <div id="messageContainer"></div>
 <form asp-action="CrearPaciente" asp-controller="Patient" method="post">
+
+    <input type="hidden" asp-for="EstadoPacientes" class="form-control"  value="1" readonly />
+
+
     <div class="hr-text">
         <hr>
         <span><i class="fas fa-user"></i> Datos Personales</span>
@@ -255,7 +259,6 @@
     <div class="container">
         <div class="form-row g-3">
             <a asp-action="ListarPacientes" asp-controller="Patient" class="btn btn-warning"><i class="fa fa-undo"></i> Volver a la lista</a>
-            <a asp-action="Guardar" asp-controller="Cita" class="btn btn-outline-primary"><i class="fas fa-calendar-plus me-1"></i> Generar cita</a>
             <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Guardar</button>
         </div>
     </div>

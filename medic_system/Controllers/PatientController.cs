@@ -116,7 +116,6 @@ namespace medic_system.Controllers
             return View(paciente);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> EliminarPaciente(int id)
         {
@@ -132,6 +131,8 @@ namespace medic_system.Controllers
 
             return RedirectToAction("ListarPacientes");
         }
+
+
         [HttpGet]
         public async Task<IActionResult> ListarPacientes()
         {

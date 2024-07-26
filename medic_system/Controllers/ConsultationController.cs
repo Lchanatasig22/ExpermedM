@@ -36,6 +36,9 @@ namespace medic_system.Controllers
             _medical_SystemContext = medical_SystemContext;
         }
 
+
+     
+
         public async Task<IActionResult> ListarConsultas()
         {
             try

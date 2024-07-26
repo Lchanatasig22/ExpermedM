@@ -38,6 +38,12 @@ public class ConsultationService
         return consultas;
     }
 
+    public async Task DeleteConsultasByPacienteIdAsync(int pacienteId)
+    {
+        var consultas = await _context.Consulta.Where(c => c.PacienteConsultaP == pacienteId).ToListAsync();
+        _context.Consulta.RemoveRange(consultas);
+        await _context.SaveChangesAsync();
+    }
     public async Task<Consultum> GetConsultaByIdAsync(int id)
     {
         return await _context.Consulta
