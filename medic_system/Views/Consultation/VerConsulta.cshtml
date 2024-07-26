@@ -368,6 +368,9 @@
 
             <div class="text-end mt-3">
                 <a asp-action="ListarConsultas" asp-controller="Consultation" class="btn btn-outline-secondary"><i class="fa fa-close"></i> Salir</a>
+                <button type="button" class="btn btn-outline-primary" onclick="showModal()">
+                    <i class="fa-regular fa-file-pdf"></i> Generar Documento
+                </button>
                 <button class="btn btn-primary nextBtn btn-lg ms-3" type="button" onclick="goToNextStep(2)">Siguiente <i class="fa fa-arrow-right"></i></button>
             </div>
         </div>
@@ -725,6 +728,9 @@
 
                 <button class="btn btn-primary previousBtn btn-lg" type="button" onclick="goToPreviousStep(1)"><i class="fa fa-arrow-left"></i> Regresar</button>
                 <button class="btn btn-primary nextBtn btn-lg ms-3" type="button" onclick="goToNextStep(3)">Siguiente <i class="fa fa-arrow-right"></i></button>
+                <button type="button" class="btn btn-outline-primary" onclick="showModal()">
+                    <i class="fa-regular fa-file-pdf"></i> Generar Documento
+                </button>
             </div>
         </div>
         <!--Fin segundo formulario-->
@@ -1134,9 +1140,12 @@
 
             <div class="text-end mt-3">
                 <a asp-action="ListarConsultas" asp-controller="Consultation" class="btn btn-outline-secondary"><i class="fa fa-close"></i> Salir</a>
-
+           
                 <button class="btn btn-primary previousBtn btn-lg" type="button"><i class="fa fa-arrow-left"></i> Regresar</button>
                 <button class="btn btn-primary nextBtn btn-lg ms-3" type="button">Siguiente <i class="fa fa-arrow-right"></i></button>
+                <button type="button" class="btn btn-outline-primary" onclick="showModal()">
+                    <i class="fa-regular fa-file-pdf"></i> Generar Documento
+                </button>
             </div>
         </div>
         <!--Final tercer formulario-->

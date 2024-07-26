@@ -33,15 +33,14 @@
 <hr />
 
 <div class="table-responsive">
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped table-sm">
         <thead>
             <tr class="table-primary">
                 <th>Acciones</th>
                 <th>Fecha de la Cita</th>
                 <th>Nombre Paciente</th>
                 <th>Motivo</th>
-                <th>Especialidad</th>
-    @*             <th>Estado de Pago</th> *@
+                <th class="d-none d-md-table-cell">Especialidad</th>
             </tr>
         </thead>
         <tbody>
@@ -49,11 +48,11 @@
             {
                 <tr id="cita-@cita.IdCita">
                     <td>
-                        <a asp-action="EditarCita" asp-route-id="@cita.IdCita" class="btn btn-outline-primary">
+                        <a asp-action="EditarCita" asp-route-id="@cita.IdCita" class="btn btn-outline-primary btn-sm">
                             <i class="fa-regular fa-pen-to-square"></i> Revisar
                         </a>
                         <form id="eliminarCitaForm-@cita.IdCita" asp-action="EliminarCita" asp-route-id="@cita.IdCita" method="post" style="display:inline;">
-                            <button type="button" class="btn btn-outline-danger" onclick="confirmarEliminarCita(@cita.IdCita)">
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmarEliminarCita(@cita.IdCita)">
                                 <i class="fa-solid fa-trash"></i> Eliminar
                             </button>
                         </form>
@@ -61,13 +60,7 @@
                     <td>@cita.FechadelacitaCita?.ToString("dd/MM/yyyy") - @cita.HoradelacitaCita</td>
                     <td>@cita.Paciente.PrimernombrePacientes @cita.Paciente.PrimerapellidoPacientes</td>
                     <td>@(cita.Motivo ?? "No disponible")</td>
-                    <td>@ViewBag.UsuarioEspecialidad</td>
-                @*    
-                    <td>
-                        <a asp-action="Facturacion" asp-controller="Facturacion" asp-route-id="@cita.IdCita" class="btn btn-outline-success">
-                            <i class="fa-solid fa-money-bill"></i> Pagar
-                        </a>
-                    </td> *@
+                    <td class="d-none d-md-table-cell">@ViewBag.UsuarioEspecialidad</td>
                 </tr>
             }
         </tbody>
@@ -76,6 +69,7 @@
         No se encontraron resultados.
     </div>
 </div>
+
 
 <a asp-action="ListarPacientes" asp-controller="Patient" class="btn btn-outline-primary">
     <i class="fa fa-plus"></i> Añadir nueva cita
